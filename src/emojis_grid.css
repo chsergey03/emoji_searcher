@@ -1,0 +1,67 @@
+.emojis-grid-container {
+    display: flex;
+
+    width: 100%;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    margin-top: 20rem;
+
+    justify-content: center;
+
+    padding-bottom: 4.25rem;
+}
+
+.emojis-grid {
+    list-style-type: none;
+
+    padding-left: 0;
+}
+
+.emojis-grid {
+    display: grid;
+
+    grid-template-columns: repeat(5, 16.25rem);
+
+    gap: 1.25rem;
+}
+
+.emoji-card {
+    display: flex;
+    flex-direction: column;
+
+    width: 15rem;
+    height: 10rem;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px;
+
+    border: 1px solid #ddd;
+    border-radius: 0.7rem;
+
+    background-color: #f9f9f9;
+
+    transition: transform 0.3s;
+}
+
+.emoji-card:hover {
+    transform: translateY(-5px);
+}
+
+.emoji-character {
+    font-family: "Noto Color Emoji", sans-serif;
+    font-size: 2rem;
+}
+
+.emoji-name {
+    margin-top: 10px;
+
+    text-align: center;
+
+    font-size: 0.9rem;
+    color: #000000;
+}

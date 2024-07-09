@@ -1,7 +1,7 @@
 import "./app.css";
 
 import SearchBar from "./search_bar.jsx";
-import EmojisList from "./emojis_list.jsx";
+import EmojisGrid from "./emojis_grid.jsx";
 import LoadingSpinner from './loading_spinner.jsx';
 
 import {
@@ -131,7 +131,7 @@ function App() {
 
             {loading ?
                 <LoadingSpinner/> :
-                <EmojisList emojisData={emojisData}/>}
+                <EmojisGrid emojisData={emojisData}/>}
         </div>
     );
 }
