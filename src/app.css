@@ -1,4 +1,12 @@
+@font-face {
+  font-family: "Hauora";
+  src: url("fonts/hauora_regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 #root {
+  font-family: "Hauora", serif;
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -39,4 +47,19 @@
 
 .read-the-docs {
   color: #888;
+}
+
+@font-face {
+  font-family: "Noto Color Emoji";
+  src: url("fonts/noto_color_emoji_regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.emoji {
+  font-family: "Noto Color Emoji", sans-serif;
+}
+
+.main-header {
+  font-weight: bolder;
 }
