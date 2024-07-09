@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/noto-color-emoji": "^5.0.27",
     "axios": "^1.7.2",
     "flag-icons": "^7.2.3",
     "fluent-emoji": "^0.1.2",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

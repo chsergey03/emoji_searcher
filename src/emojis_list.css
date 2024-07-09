@@ -1,0 +1,16 @@
+.emojis-list-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    margin-top: 18rem;
+}
+
+.emojis-list {
+    list-style-type: none;
+
+    padding-left: 0;
+}
