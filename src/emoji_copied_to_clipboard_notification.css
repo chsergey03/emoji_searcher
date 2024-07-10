@@ -1,0 +1,25 @@
+.emoji-copied-to-clipboard-notification {
+    position: fixed;
+
+    top: -4.25rem;
+    left: 50%;
+
+    padding: 0.35rem;
+
+    transform: translateX(-50%);
+
+    border: 0.2rem solid #04c506;
+    border-radius: 0.7rem;
+
+    background-color: #ffffff;
+
+    font-size: 0.9rem;
+    color: #000000;
+
+    transition: top 0.75s ease-in-out, border-color 0.75s ease-in-out;
+    z-index: 1000;
+}
+
+.emoji-copied-to-clipboard-notification.visible {
+    top: 0.85rem;
+}

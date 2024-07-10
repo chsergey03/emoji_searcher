@@ -1,8 +1,11 @@
 import "./app.css";
 
 import SearchBar from "./search_bar.jsx";
-import EmojisGrid from "./emojis_grid.jsx";
+
 import LoadingSpinner from './loading_spinner.jsx';
+import EmojisGrid from "./emojis_grid.jsx";
+import EmojiCopiedToClipboardNotification from "./emoji_copied_to_clipboard_notification.jsx";
+import EmojisGridPages from "./emojis_grid_pages.jsx"
 
 import {
     useState,
@@ -11,16 +14,25 @@ import {
 
 import axios from "axios";
 
+const N_EMOJIS_PER_PAGE = 15;
+const CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE = 1;
+
 // функциональный компонент "веб-приложение
 // поисковика смайлов".
 function App() {
     const [loading, setLoading] = useState(true);
 
     const [emojis, setEmojis] = useState([]);
+    const [filteredEmojis, setFilteredEmojis] = useState([]);
+
+    const [currentEmojisGridPageNumber,
+           setCurrentEmojisGridPageNumber] =
+        useState(CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE);
 
     const [searchQuery, setSearchQuery] = useState("");
 
-    const [filteredEmojis, setFilteredEmojis] = useState([]);
+    const [isNotificationVisible, setIsNotificationVisible] = useState(false);
+    const [notificationMessageEmoji, setNotificationMessageEmoji] = useState("");
 
     useEffect(() => {
         const cachedEmojis = localStorage.getItem('emojis');
@@ -93,18 +105,33 @@ function App() {
         setSearchQuery(searchQuery);
 
         const emojisAfterFiltering = emojis.filter(
-            emoji => emoji.unicodeName.includes(searchQuery));
+            emoji => emoji.unicodeName.toLowerCase().includes(searchQuery.toLowerCase()));
 
         setFilteredEmojis(emojisAfterFiltering);
+
+        setCurrentEmojisGridPageNumber(
+            CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE);
     };
 
     const handleClearSearch = () => {
         setSearchQuery("");
     };
 
-    let emojisData;
+    const handleCopyingEmojiToClipboard = (emojiCharacter) => {
+        setNotificationMessageEmoji(emojiCharacter);
 
-    console.log(filteredEmojis);
+        setIsNotificationVisible(true);
+
+        setTimeout(() => {
+            setIsNotificationVisible(false);
+        }, 2000);
+    };
+
+    const paginate = (pageNumber) => {
+        setCurrentEmojisGridPageNumber(pageNumber);
+    }
+
+    let emojisData;
 
     if (searchQuery.length > 0) {
         emojisData = filteredEmojis;
@@ -112,8 +139,19 @@ function App() {
         emojisData = emojis;
     }
 
+    const nPagesOfEmojisGrid = Math.ceil(emojisData.length / N_EMOJIS_PER_PAGE);
+    const indexOfLastEmoji = currentEmojisGridPageNumber * N_EMOJIS_PER_PAGE;
+    const indexOfFirstEmoji = indexOfLastEmoji - N_EMOJIS_PER_PAGE;
+
+    emojisData = emojisData.slice(indexOfFirstEmoji, indexOfLastEmoji);
+
     return (
         <div className="App">
+            <EmojiCopiedToClipboardNotification
+                isVisible={isNotificationVisible}
+                emojiCharacter={notificationMessageEmoji}
+            />
+
             <div className="main-header-container">
                 <h1>emoji searcher</h1>
             </div>
@@ -125,13 +163,29 @@ function App() {
             {searchQuery.length > 0 &&
                 <div className="search-header-container">
                     <h4 className="search-header">
-                        {`emojis found on request "${searchQuery}":`}
+                        {emojisData.length > 0 ?
+                            `смайлы, найденные по запросу "${searchQuery}", 
+                             (количество результатов поиска: ${emojisData.length}):` :
+                            `по запросу "${searchQuery}" не найдено ни одного смайла.`}
                     </h4>
-                </div>}
+                </div>
+            }
 
             {loading ?
                 <LoadingSpinner/> :
-                <EmojisGrid emojisData={emojisData}/>}
+                <>
+                    <EmojisGrid
+                        emojisData={emojisData}
+                        onEmojiCopiedToClipboard={handleCopyingEmojiToClipboard}
+                    />
+
+                    {nPagesOfEmojisGrid > 1 &&
+                        <EmojisGridPages
+                            nEmojisPerPage={N_EMOJIS_PER_PAGE}
+                            currentPageNumber={currentEmojisGridPageNumber}
+                            nPagesOfEmojisGrid={nPagesOfEmojisGrid}
+                            onPageChange={paginate}/>}
+                </>}
         </div>
     );
 }

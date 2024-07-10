@@ -1,78 +1,82 @@
 @font-face {
-  font-family: "Noto Color Emoji";
+    font-family: "Noto Color Emoji";
 
-  src: url("fonts/noto_color_emoji_400_normal.woff2") format("woff2");
+    src: url("fonts/noto_color_emoji_400_normal.woff2") format("woff2");
 
-  font-weight: normal;
-  font-style: normal;
+    font-weight: normal;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: "Hauora";
+    font-family: "Hauora";
 
-  src: url("fonts/hauora_regular.woff2") format("woff2");
+    src: url("fonts/hauora_regular.woff2") format("woff2");
 
-  font-weight: normal;
-  font-style: normal;
+    font-weight: normal;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: "Hauora";
+    font-family: "Hauora";
 
-  src: url("fonts/hauora_bold.woff2") format("woff2");
+    src: url("fonts/hauora_bold.woff2") format("woff2");
 
-  font-weight: bold;
-  font-style: normal;
+    font-weight: bold;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: "Noto Color Emoji";
-  font-weight: normal;
-  font-style: normal;
+    font-family: "Noto Color Emoji";
+    font-weight: normal;
+    font-style: normal;
 }
 
 :root {
-  line-height: 1.5;
+    line-height: 1.5;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
 
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, Hauora, "Noto Color Emoji", sans-serif;
-  font-weight: 400;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, Hauora, "Noto Color Emoji", sans-serif;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
 
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
-  justify-content: center;
+    justify-content: center;
 }
 
 a {
-  font-weight: 500;
+    font-weight: 500;
 
-  color: #646cff;
+    color: #646cff;
 
-  text-decoration: inherit;
+    text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+    color: #535bf2;
+}
+
+html {
+    min-height: 100%;
 }
 
 body {
-  min-width: 320px;
-  min-height: 100vh;
+    min-width: 100%;
+    min-height: 100%;
 
-  display: flex;
+    display: flex;
 
-  margin: 0;
+    margin: 0;
 
-  place-items: center;
+    place-items: center;
 }
 
 h1 {
-  line-height: 1.1;
+    line-height: 1.1;
 
-  font-size: 3.2em;
+    font-size: 3.2em;
 }

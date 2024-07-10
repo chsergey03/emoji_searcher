@@ -3,65 +3,112 @@
 
     width: 100%;
 
-    position: absolute;
-    top: 0;
+    position: relative;
+    bottom: 0;
     left: 0;
 
-    margin-top: 20rem;
+    margin-top: 15rem;
 
     justify-content: center;
-
-    padding-bottom: 4.25rem;
 }
 
 .emojis-grid {
-    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
 
-    padding-left: 0;
-}
-
-.emojis-grid {
-    display: grid;
+    justify-content: center;
 
     grid-template-columns: repeat(5, 16.25rem);
 
     gap: 1.25rem;
+
+    margin-bottom: 2.5rem;
 }
 
 .emoji-card {
     display: flex;
     flex-direction: column;
 
+    padding: 0.25rem;
+
     width: 15rem;
-    height: 10rem;
+    height: 7rem;
 
-    align-items: center;
-    justify-content: center;
-
-    padding: 10px;
-
-    border: 1px solid #ddd;
+    border: 0.2rem solid #b1afaf;
     border-radius: 0.7rem;
 
     background-color: #f9f9f9;
 
-    transition: transform 0.3s;
+    transition: transform 0.3s, border-color 0.3s;
 }
 
 .emoji-card:hover {
-    transform: translateY(-5px);
+    border: 0.2rem solid #006fff;
+
+    transform: translateY(-0.5rem);
 }
 
 .emoji-character {
+    justify-self: flex-start;
+
     font-family: "Noto Color Emoji", sans-serif;
     font-size: 2rem;
 }
 
 .emoji-name {
-    margin-top: 10px;
+    justify-self: flex-start;
 
     text-align: center;
 
     font-size: 0.9rem;
     color: #000000;
+}
+
+.copy-to-clipboard-button {
+    position: absolute;
+
+    top: 0.7rem;
+    right: 0.7rem;
+
+    width: 3.5rem;
+    height: 2rem;
+
+    border: 1px solid white;
+    border-radius: 0.7rem;
+
+    background-color: white;
+
+    justify-content: center;
+    align-content: center;
+
+    font-size: 0.9rem;
+    color: white;
+
+    cursor: pointer;
+
+    transition: background-color 0.3s, opacity 0.3s, visibility 0.3s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.emoji-card:hover .copy-to-clipboard-button {
+    opacity: 1;
+    visibility: visible;
+
+    background-color: #b1afaf;
+}
+
+.emoji-card:hover .copy-to-clipboard-button:hover {
+    background-color: #007bff;
+}
+
+.emoji-card:hover .copy-to-clipboard-button:not(:hover) {
+    background-color: #b1afaf;
+}
+
+.copy-to-clipboard-icon {
+    width: 1.3rem;
+    height: 1.3rem;
+
+    margin-top: 0.25rem;
 }
