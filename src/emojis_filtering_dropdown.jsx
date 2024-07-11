@@ -1,23 +1,34 @@
 import './emojis_filtering_dropdown.css';
 
 import {
-    useState
+    useState,
+    forwardRef,
+    useImperativeHandle
 } from "react";
 
 import PropTypes from "prop-types";
 
 // функциональный компонент "выпадающее меню фильтрации смайлов по категории".
-function EmojisFilteringDropdown({onFilterEmojis}) {
+const EmojisFilteringDropdown = forwardRef((props, ref) => {
     const [selectedValue, setSelectedValue] = useState("header");
 
     const handleChange = (event) => {
         if (event.target.value !== "header") {
             setSelectedValue(event.target.value);
 
-            onFilterEmojis(event.target.value);
+            props.onFilterEmojis(event.target.value);
         }
-
     };
+
+    const setHeader = () => {
+        setSelectedValue("header");
+    }
+
+    useImperativeHandle(ref, () => ({
+        resetSelectedValue: () => {
+            setHeader();
+        }
+    }));
 
     return (
         <div className="emojis-filtering-dropdown-container">
@@ -80,7 +91,7 @@ function EmojisFilteringDropdown({onFilterEmojis}) {
             </select>
         </div>
     );
-}
+});
 
 EmojisFilteringDropdown.propTypes = {
     onFilterEmojis: PropTypes.func.isRequired

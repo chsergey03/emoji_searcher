@@ -14,7 +14,8 @@ import EmojisFilteringDropdown from "./emojis_filtering_dropdown.jsx";
 
 import {
     useReducer,
-    useEffect
+    useEffect,
+    useRef
 } from "react";
 
 import axios from "axios";
@@ -24,7 +25,6 @@ const CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE = 1;
 
 const initialState = {
     isLoading: true,
-    isNecessaryToClearInputForm: false,
     emojisData: [],
     currentEmojisGridPageNumber: CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE,
     searchQuery: "",
@@ -36,8 +36,6 @@ function reducer(state, action) {
     switch (action.type) {
         case "SET_IS_LOADING_FALSE":
             return {...state, isLoading: false};
-        case "SET_IS_NECESSARY_TO_CLEAR_INPUT_FORM_TRUE":
-            return {...state, isNecessaryToClearInputForm: true};
         case "SET_EMOJIS_DATA":
             return {...state, emojisData: action.payload, isLoading: false};
         case "SET_SEARCH_QUERY":
@@ -57,6 +55,10 @@ function reducer(state, action) {
 // поисковика смайлов".
 function App() {
     const [state, dispatch] = useReducer(reducer, initialState);
+
+    const searchBarRef = useRef();
+    const emojisFilteringDropdownRef = useRef();
+    const emojisSortingDropdownRef = useRef();
 
     useEffect(() => {
         const cachedEmojis = localStorage.getItem("emojisData");
@@ -125,6 +127,9 @@ function App() {
     }, []);
 
     const handleSearch = (searchQuery) => {
+        emojisSortingDropdownRef.current.resetSelectedValue();
+        emojisFilteringDropdownRef.current.resetSelectedValue();
+
         dispatch({type: "SET_SEARCH_QUERY", payload: searchQuery});
 
         const emojisAfterFiltering = JSON.parse(localStorage.getItem("emojisData")).filter(
@@ -195,13 +200,13 @@ function App() {
 
     const filterEmojis = (category) => {
         if (category !== "header") {
+            searchBarRef.current.resetSearchBar();
+
             dispatch({type: "SET_SEARCH_QUERY", payload: ""});
 
             const emojisAfterFiltering = JSON.parse(localStorage.getItem("emojisData")).filter(
                 emoji => emoji.group === category
             );
-
-            dispatch({type: "SET_IS_NECESSARY_TO_CLEAR_INPUT_FORM_TRUE"});
 
             dispatch({type: "SET_EMOJIS_DATA", payload: emojisAfterFiltering});
 
@@ -225,14 +230,20 @@ function App() {
 
             <div className="search-sorting-filtering-container">
                 <SearchBar
-                    isNecessaryToClearInputForm={state.isNecessaryToClearInputForm}
+                    ref={searchBarRef}
                     onSearch={handleSearch}
                     onClearSearch={handleClearSearch}
                 />
 
-                <EmojisSortingDropdown onSortEmojis={sortEmojis}/>
+                <EmojisSortingDropdown
+                    ref={emojisSortingDropdownRef}
+                    onSortEmojis={sortEmojis}
+                />
 
-                <EmojisFilteringDropdown onFilterEmojis={filterEmojis}/>
+                <EmojisFilteringDropdown
+                    ref={emojisFilteringDropdownRef}
+                    onFilterEmojis={filterEmojis}
+                />
             </div>
 
             {state.searchQuery.length > 0 ?

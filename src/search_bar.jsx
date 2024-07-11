@@ -1,13 +1,15 @@
 import './search_bar.css';
 
 import {
-    useState
+    useState,
+    forwardRef,
+    useImperativeHandle
 } from "react";
 
 import PropTypes from "prop-types";
 
 // функциональный компонент "поисковая строка".
-const SearchBar = ({isNecessaryToClearInputForm, onSearch, onClearSearch}) => {
+const SearchBar = forwardRef((props, ref) => {
     const [query, setQuery] = useState("");
     const [isOnSearch, setIsOnSearch] = useState(false);
 
@@ -21,30 +23,40 @@ const SearchBar = ({isNecessaryToClearInputForm, onSearch, onClearSearch}) => {
 
             setIsOnSearch(true)
 
-            onSearch(event.target.value);
+            props.onSearch(event.target.value);
         }
     }
 
-    const handleClear = () => {
+    const clear = () => {
         setQuery("");
 
         setIsOnSearch(false);
+    }
 
-        onSearch("");
-        onClearSearch(true);
+    const handleClear = () => {
+        clear();
+
+        props.onSearch("");
+        props.onClearSearch(true);
     };
+
+    useImperativeHandle(ref, () => ({
+        resetSearchBar: () => {
+            clear();
+        }
+    }));
 
     return (
         <div className="search-bar-container">
             <input
                 type="text"
                 className="input-field"
-                value={isNecessaryToClearInputForm ? "" : query}
+                value={query}
                 onChange={handleChange}
                 onKeyPress={handleKeyPress}
                 placeholder={`введите имя смайла и нажмите на клавишу "enter"...`}
             />
-            {!isNecessaryToClearInputForm && isOnSearch &&
+            {isOnSearch &&
                 <button
                     className="input-field-clear-button"
                     onClick={handleClear}>
@@ -53,10 +65,9 @@ const SearchBar = ({isNecessaryToClearInputForm, onSearch, onClearSearch}) => {
             }
         </div>
     );
-};
+});
 
 SearchBar.propTypes = {
-    isNecessaryToClearInputForm: PropTypes.bool.isRequired,
     onSearch: PropTypes.func.isRequired,
     onClearSearch: PropTypes.func.isRequired,
 };
