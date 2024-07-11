@@ -1,21 +1,22 @@
 .search-bar-container {
     display: flex;
 
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
 
-    margin-top: 9.5rem;
+    margin-top: 0;
 
-    width: 100%;
+    width: 24.25rem;
 
     justify-content: center;
     align-items: center;
 }
 
-.input-form {
-    width: 25rem;
-    height: 1.25rem;
+.input-field {
+    position: relative;
+
+    top: 0;
+
+    width: 22.5rem;
     padding: 0.75rem;
 
     background-color: #ffffff;
@@ -23,25 +24,23 @@
     border-radius: 0.7rem;
     border: 0.2rem solid #b1afaf;
 
-    align-content: center;
-    justify-content: center;
-
     font-family: Hauora, sans-serif;
     color: #000000;
 
     transition: border-color 0.3s;
 }
 
-.input-form:focus {
+.input-field:focus {
     border: 0.2rem solid #006fff;
 
     outline: none;
 }
 
-.input-form-clear-button {
+.input-field-clear-button {
     position: absolute;
 
-    margin-left: 23.75rem;
+    top: 0.6rem;
+    right: 0.75rem;
 
     background: none;
     border: none;
@@ -55,10 +54,10 @@
     transition: color 0.3s;
 }
 
-.input-form:focus .input-form-clear-button {
+.input-field:focus .input-form-clear-button {
     color: #b1afaf;
 }
 
-.input-form-clear-button:hover {
+.input-field-clear-button:hover {
     color: #006fff;
 }

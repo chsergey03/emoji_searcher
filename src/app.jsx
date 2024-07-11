@@ -2,13 +2,17 @@ import "./app.css";
 
 import SearchBar from "./search_bar.jsx";
 
-import LoadingSpinner from './loading_spinner.jsx';
+import LoadingSpinner from "./loading_spinner.jsx";
+
 import EmojisGrid from "./emojis_grid.jsx";
+import EmojisGridPages from "./emojis_grid_pages.jsx";
+
 import EmojiCopiedToClipboardNotification from "./emoji_copied_to_clipboard_notification.jsx";
-import EmojisGridPages from "./emojis_grid_pages.jsx"
+
+import EmojisSortingDropdown from "./emojis_sorting_dropdown.jsx";
 
 import {
-    useState,
+    useReducer,
     useEffect
 } from "react";
 
@@ -17,29 +21,44 @@ import axios from "axios";
 const N_EMOJIS_PER_PAGE = 15;
 const CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE = 1;
 
+const initialState = {
+    isLoading: true,
+    emojisData: [],
+    currentEmojisGridPageNumber: CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE,
+    searchQuery: "",
+    isNotificationVisible: false,
+    notificationMessageEmoji: ""
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case "SET_IS_LOADING_FALSE":
+            return {...state, isLoading: false};
+        case "SET_EMOJIS_DATA":
+            return {...state, emojisData: action.payload, isLoading: false};
+        case "SET_SEARCH_QUERY":
+            return {...state, searchQuery: action.payload};
+        case "SET_CURRENT_PAGE":
+            return {...state, currentEmojisGridPageNumber: action.payload};
+        case "SHOW_NOTIFICATION":
+            return {...state, isNotificationVisible: true, notificationMessageEmoji: action.payload};
+        case "HIDE_NOTIFICATION":
+            return {...state, isNotificationVisible: false};
+        default:
+            return state;
+    }
+}
+
 // функциональный компонент "веб-приложение
 // поисковика смайлов".
 function App() {
-    const [loading, setLoading] = useState(true);
-
-    const [emojis, setEmojis] = useState([]);
-    const [filteredEmojis, setFilteredEmojis] = useState([]);
-
-    const [currentEmojisGridPageNumber,
-           setCurrentEmojisGridPageNumber] =
-        useState(CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE);
-
-    const [searchQuery, setSearchQuery] = useState("");
-
-    const [isNotificationVisible, setIsNotificationVisible] = useState(false);
-    const [notificationMessageEmoji, setNotificationMessageEmoji] = useState("");
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
-        const cachedEmojis = localStorage.getItem('emojis');
-        if (cachedEmojis) {
-            setEmojis(JSON.parse(cachedEmojis));
+        const cachedEmojis = localStorage.getItem("emojisData");
 
-            setLoading(false);
+        if (cachedEmojis) {
+            dispatch({type: "SET_EMOJIS_DATA", payload: JSON.parse(cachedEmojis)});
         } else {
             axios.get(
                 "https://emoji-api.com/emojis?" +
@@ -84,105 +103,136 @@ function App() {
                         "1F9D1 1F3FB 200D 2764 FE0F 200D 1F48B 200D 1F9D1 1F3FC ; fully-qualified"
                     ];
 
-                    const emojisData = response.data.filter(emoji =>
-                        !prohibitedCodepoints.includes(emoji.codePoint));
+                    const data = response.data.filter(
+                        emoji => !prohibitedCodepoints.includes(emoji.codePoint));
 
-                    setEmojis(emojisData);
+                    dispatch({type: "SET_EMOJIS_DATA", payload: data});
 
-                    setLoading(false);
+                    localStorage.setItem("emojisData", JSON.stringify(data));
                 })
                 .catch(error => {
+                    dispatch({type: "SET_IS_LOADING_FALSE"});
+
                     console.error(
                         "there was an error fetching the emojis data!",
                         error);
-
-                    setLoading(false);
                 });
         }
     }, []);
 
     const handleSearch = (searchQuery) => {
-        setSearchQuery(searchQuery);
+        dispatch({type: "SET_SEARCH_QUERY", payload: searchQuery});
 
-        const emojisAfterFiltering = emojis.filter(
-            emoji => emoji.unicodeName.toLowerCase().includes(searchQuery.toLowerCase()));
+        const emojisAfterFiltering = state.emojisData.filter(
+            emoji => emoji.unicodeName.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
-        setFilteredEmojis(emojisAfterFiltering);
+        dispatch({type: "SET_EMOJIS_DATA", payload: emojisAfterFiltering});
 
-        setCurrentEmojisGridPageNumber(
-            CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE);
+        dispatch({
+            type: "SET_CURRENT_PAGE",
+            payload: CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE
+        });
     };
 
     const handleClearSearch = () => {
-        setSearchQuery("");
+        dispatch({type: "SET_SEARCH_QUERY", payload: ""});
+
+        dispatch({
+            type: "SET_EMOJIS_DATA",
+            payload: JSON.parse(localStorage.getItem("emojisData"))});
     };
 
     const handleCopyingEmojiToClipboard = (emojiCharacter) => {
-        setNotificationMessageEmoji(emojiCharacter);
-
-        setIsNotificationVisible(true);
+        dispatch({type: "SHOW_NOTIFICATION", payload: emojiCharacter});
 
         setTimeout(() => {
-            setIsNotificationVisible(false);
+            dispatch({type: "HIDE_NOTIFICATION"});
         }, 2000);
     };
 
     const paginate = (pageNumber) => {
-        setCurrentEmojisGridPageNumber(pageNumber);
+        dispatch({type: "SET_CURRENT_PAGE", payload: pageNumber});
     }
 
-    let emojisData;
-
-    if (searchQuery.length > 0) {
-        emojisData = filteredEmojis;
-    } else {
-        emojisData = emojis;
-    }
-
-    const nPagesOfEmojisGrid = Math.ceil(emojisData.length / N_EMOJIS_PER_PAGE);
-    const indexOfLastEmoji = currentEmojisGridPageNumber * N_EMOJIS_PER_PAGE;
+    const nPagesOfEmojisGrid = Math.ceil(state.emojisData.length / N_EMOJIS_PER_PAGE);
+    const indexOfLastEmoji = state.currentEmojisGridPageNumber * N_EMOJIS_PER_PAGE;
     const indexOfFirstEmoji = indexOfLastEmoji - N_EMOJIS_PER_PAGE;
 
-    emojisData = emojisData.slice(indexOfFirstEmoji, indexOfLastEmoji);
+    const sortEmojis = (sortingRule) => {
+        let comparator;
+
+        switch (sortingRule) {
+            case "asc":
+                comparator = (a, b) => {
+                    const codePointA = parseInt(a.codePoint, 16);
+                    const codePointB = parseInt(b.codePoint, 16);
+
+                    return codePointA - codePointB;
+                };
+
+                break;
+            case "desc":
+                comparator = (a, b) => {
+                    const codePointA = parseInt(a.codePoint, 16);
+                    const codePointB = parseInt(b.codePoint, 16);
+
+                    return codePointB - codePointA;
+                };
+
+                break;
+        }
+
+        dispatch({type: "SET_EMOJIS_DATA", payload: [...state.emojisData].sort(comparator)});
+    }
 
     return (
         <div className="App">
             <EmojiCopiedToClipboardNotification
-                isVisible={isNotificationVisible}
-                emojiCharacter={notificationMessageEmoji}
+                isVisible={state.isNotificationVisible}
+                emojiCharacter={state.notificationMessageEmoji}
             />
 
             <div className="main-header-container">
-                <h1>emoji searcher</h1>
+                <h1 className="main-header">emoji searcher</h1>
             </div>
 
-            <SearchBar
-                onSearch={handleSearch}
-                onClearSearch={handleClearSearch}/>
+            <div className="search-sorting-filtering-container">
+                <SearchBar
+                    onSearch={handleSearch}
+                    onClearSearch={handleClearSearch}
+                />
 
-            {searchQuery.length > 0 &&
-                <div className="search-header-container">
-                    <h4 className="search-header">
-                        {emojisData.length > 0 ?
-                            `смайлы, найденные по запросу "${searchQuery}", 
-                             (количество результатов поиска: ${emojisData.length}):` :
-                            `по запросу "${searchQuery}" не найдено ни одного смайла.`}
+                <EmojisSortingDropdown onSortEmojis={sortEmojis}/>
+            </div>
+
+            {state.searchQuery.length > 0 ?
+                <div className="search-results-header-container">
+                    <h4 className="search-results-header">
+                        {state.emojisData.length > 0 ?
+                            `смайлы, найденные по запросу "${state.searchQuery}", 
+                             (количество результатов поиска: ${state.emojisData.length}):` :
+                            `по запросу "${state.searchQuery}" не найдено ни одного смайла.`}
                     </h4>
+                </div> :
+                <div
+                    className="search-results-header-container-empty"
+                >
                 </div>
             }
 
-            {loading ?
+            {state.isLoading ?
                 <LoadingSpinner/> :
                 <>
                     <EmojisGrid
-                        emojisData={emojisData}
+                        emojisData={state.emojisData.slice(indexOfFirstEmoji, indexOfLastEmoji)}
                         onEmojiCopiedToClipboard={handleCopyingEmojiToClipboard}
                     />
 
                     {nPagesOfEmojisGrid > 1 &&
                         <EmojisGridPages
                             nEmojisPerPage={N_EMOJIS_PER_PAGE}
-                            currentPageNumber={currentEmojisGridPageNumber}
+                            currentPageNumber={state.currentEmojisGridPageNumber}
                             nPagesOfEmojisGrid={nPagesOfEmojisGrid}
                             onPageChange={paginate}/>}
                 </>}

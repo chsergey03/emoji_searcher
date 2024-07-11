@@ -1,7 +1,12 @@
 .loading-spinner {
-    height: 20rem;
-
     display: flex;
+
+    position: absolute;
+    top: 0;
+
+    margin-top: 22.5rem;
+
+    width: 100%;
 
     justify-content: center;
     align-items: center;

@@ -7,7 +7,7 @@
     bottom: 0;
     left: 0;
 
-    margin-top: 15rem;
+    margin-top: 0.5rem;
 
     justify-content: center;
 }
@@ -21,8 +21,6 @@
     grid-template-columns: repeat(5, 16.25rem);
 
     gap: 1.25rem;
-
-    margin-bottom: 2.5rem;
 }
 
 .emoji-card {

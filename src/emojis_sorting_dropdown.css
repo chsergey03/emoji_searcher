@@ -1,0 +1,32 @@
+.emojis-sorting-dropdown-container {
+    display: flex;
+
+    position: relative;
+
+    justify-content: center;
+}
+
+.emojis-sorting-dropdown-container select {
+    position: relative;
+
+    top: 0;
+
+    margin-left: 1.25rem;
+
+    padding: 0.75rem;
+
+    border: 0.2rem solid #b1afaf;
+    border-radius: 0.7rem;
+
+    background-color: #ffffff;
+
+    font-family: Hauora, sans-serif;
+    font-size: 0.9rem;
+    color: #000000;
+}
+
+.emojis-sorting-dropdown-container select:focus {
+    border: 0.2rem solid #006fff;
+
+    outline: none;
+}

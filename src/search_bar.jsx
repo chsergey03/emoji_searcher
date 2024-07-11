@@ -38,7 +38,7 @@ const SearchBar = ({onSearch, onClearSearch}) => {
         <div className="search-bar-container">
             <input
                 type="text"
-                className="input-form"
+                className="input-field"
                 value={query}
                 onChange={handleChange}
                 onKeyPress={handleKeyPress}
@@ -46,7 +46,7 @@ const SearchBar = ({onSearch, onClearSearch}) => {
             />
             {isOnSearch && (
                 <button
-                    className="input-form-clear-button"
+                    className="input-field-clear-button"
                     onClick={handleClear}>
                     ✖
                 </button>
