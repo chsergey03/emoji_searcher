@@ -7,7 +7,7 @@ import {
 import PropTypes from "prop-types";
 
 // функциональный компонент "поисковая строка".
-const SearchBar = ({onSearch, onClearSearch}) => {
+const SearchBar = ({isNecessaryToClearInputForm, onSearch, onClearSearch}) => {
     const [query, setQuery] = useState("");
     const [isOnSearch, setIsOnSearch] = useState(false);
 
@@ -39,23 +39,24 @@ const SearchBar = ({onSearch, onClearSearch}) => {
             <input
                 type="text"
                 className="input-field"
-                value={query}
+                value={isNecessaryToClearInputForm ? "" : query}
                 onChange={handleChange}
                 onKeyPress={handleKeyPress}
                 placeholder={`введите имя смайла и нажмите на клавишу "enter"...`}
             />
-            {isOnSearch && (
+            {!isNecessaryToClearInputForm && isOnSearch &&
                 <button
                     className="input-field-clear-button"
                     onClick={handleClear}>
                     ✖
                 </button>
-            )}
+            }
         </div>
     );
 };
 
 SearchBar.propTypes = {
+    isNecessaryToClearInputForm: PropTypes.bool.isRequired,
     onSearch: PropTypes.func.isRequired,
     onClearSearch: PropTypes.func.isRequired,
 };

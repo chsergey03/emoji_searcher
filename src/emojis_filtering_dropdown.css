@@ -1,4 +1,4 @@
-.emojis-sorting-dropdown-container {
+.emojis-filtering-dropdown-container {
     display: flex;
 
     position: relative;
@@ -6,7 +6,7 @@
     justify-content: center;
 }
 
-.emojis-sorting-dropdown-container select {
+.emojis-filtering-dropdown-container select {
     position: relative;
 
     top: 0;
@@ -29,16 +29,16 @@
     transition: border-color 0.3s;
 }
 
-.emojis-sorting-dropdown-container select:focus {
+.emojis-filtering-dropdown-container select:focus {
     border: 0.2rem solid #006fff;
 
     outline: none;
 }
 
-.emojis-sorting-dropdown-container select option {
+.emojis-filtering-dropdown-container select option {
     background-color: white;
 }
 
-.emojis-sorting-dropdown-container select option:hover {
+.emojis-filtering-dropdown-container select option:hover {
     background-color: #b1afaf;
 }

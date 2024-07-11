@@ -10,6 +10,7 @@ import EmojisGridPages from "./emojis_grid_pages.jsx";
 import EmojiCopiedToClipboardNotification from "./emoji_copied_to_clipboard_notification.jsx";
 
 import EmojisSortingDropdown from "./emojis_sorting_dropdown.jsx";
+import EmojisFilteringDropdown from "./emojis_filtering_dropdown.jsx";
 
 import {
     useReducer,
@@ -23,6 +24,7 @@ const CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE = 1;
 
 const initialState = {
     isLoading: true,
+    isNecessaryToClearInputForm: false,
     emojisData: [],
     currentEmojisGridPageNumber: CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE,
     searchQuery: "",
@@ -34,6 +36,8 @@ function reducer(state, action) {
     switch (action.type) {
         case "SET_IS_LOADING_FALSE":
             return {...state, isLoading: false};
+        case "SET_IS_NECESSARY_TO_CLEAR_INPUT_FORM_TRUE":
+            return {...state, isNecessaryToClearInputForm: true};
         case "SET_EMOJIS_DATA":
             return {...state, emojisData: action.payload, isLoading: false};
         case "SET_SEARCH_QUERY":
@@ -123,7 +127,7 @@ function App() {
     const handleSearch = (searchQuery) => {
         dispatch({type: "SET_SEARCH_QUERY", payload: searchQuery});
 
-        const emojisAfterFiltering = state.emojisData.filter(
+        const emojisAfterFiltering = JSON.parse(localStorage.getItem("emojisData")).filter(
             emoji => emoji.unicodeName.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
@@ -183,7 +187,29 @@ function App() {
                 break;
         }
 
-        dispatch({type: "SET_EMOJIS_DATA", payload: [...state.emojisData].sort(comparator)});
+        dispatch({
+            type: "SET_EMOJIS_DATA",
+            payload: [...state.emojisData].sort(comparator)
+        });
+    }
+
+    const filterEmojis = (category) => {
+        if (category !== "header") {
+            dispatch({type: "SET_SEARCH_QUERY", payload: ""});
+
+            const emojisAfterFiltering = JSON.parse(localStorage.getItem("emojisData")).filter(
+                emoji => emoji.group === category
+            );
+
+            dispatch({type: "SET_IS_NECESSARY_TO_CLEAR_INPUT_FORM_TRUE"});
+
+            dispatch({type: "SET_EMOJIS_DATA", payload: emojisAfterFiltering});
+
+            dispatch({
+                type: "SET_CURRENT_PAGE",
+                payload: CURRENT_EMOJIS_GRID_PAGE_NUMBER_INIT_VALUE
+            });
+        }
     }
 
     return (
@@ -199,11 +225,14 @@ function App() {
 
             <div className="search-sorting-filtering-container">
                 <SearchBar
+                    isNecessaryToClearInputForm={state.isNecessaryToClearInputForm}
                     onSearch={handleSearch}
                     onClearSearch={handleClearSearch}
                 />
 
                 <EmojisSortingDropdown onSortEmojis={sortEmojis}/>
+
+                <EmojisFilteringDropdown onFilterEmojis={filterEmojis}/>
             </div>
 
             {state.searchQuery.length > 0 ?
