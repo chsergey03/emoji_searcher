@@ -26,7 +26,7 @@
 
 ![sc10.png](./src/screenshots/sc10.png)
 
-<h2 style="text-align: center;">Фильтрация смайлов по группам:</h2>
+<h2 style="text-align: center;">Фильтрация смайлов по категории:</h2>
 
 ![sc11.png](./src/screenshots/sc11.png)
 
