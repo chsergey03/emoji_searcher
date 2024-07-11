@@ -8,7 +8,7 @@ import {
 
 import PropTypes from "prop-types";
 
-// функциональный компонент "выпадающее меню сортировки смайлов".
+// функциональный компонент "выпадающее меню сортировки смайлов по коду".
 const EmojisSortingDropdown = forwardRef((props, ref) => {
     const [selectedValue, setSelectedValue] = useState("header");
 
